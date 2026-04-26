@@ -2,7 +2,7 @@
 
 **Nama:** Muharyan Syaifullah  
 **NIM:** 123140045  
-**Mata Kuliah:** Pemrograman Aplikasi Mobile  
+**Mata Kuliah:** Pengembangan Aplikasi Mobile  
 
 ## Deskripsi
 Project ini merupakan pengembangan dari **Notes App** pada tugas sebelumnya dengan menambahkan **Platform-Specific Features** pada aplikasi.
