@@ -1,143 +1,81 @@
-# NotesApp
+# NotesApp - Week 8 Platform Features
 
 **Nama:** Muharyan Syaifullah  
 **NIM:** 123140045  
-**Mata Kuliah:** Pengembangan Aplikasi Mobile  
+**Mata Kuliah:** Pemrograman Aplikasi Mobile  
 
 ## Deskripsi
-NotesApp adalah aplikasi Android sederhana yang dibuat untuk memenuhi **Tugas Praktikum Minggu 7** pada mata kuliah **Pemrograman Aplikasi Mobile**.
+Project ini merupakan pengembangan dari **Notes App** pada tugas sebelumnya dengan menambahkan **Platform-Specific Features** pada aplikasi.
 
-Aplikasi ini menggunakan **SQLDelight** untuk penyimpanan data notes secara lokal dan **DataStore** untuk menyimpan pengaturan aplikasi. Aplikasi dirancang dengan konsep **offline-first**, sehingga data tetap dapat diakses meskipun tidak ada koneksi internet. Tugas minggu 7 memang meminta upgrade Notes App dengan SQLDelight, CRUD, search, settings DataStore, offline-first, dan UI states yang proper.
+Pada tugas ini, aplikasi di-upgrade dengan:
+- **Koin Dependency Injection** untuk seluruh app
+- implementasi **DeviceInfo** dengan `expect/actual`
+- implementasi **NetworkMonitor** dengan `expect/actual`
+- menampilkan **Device Info** pada **Settings Screen**
+- menampilkan **Network Status Indicator** pada **Main Screen**
+- seluruh dependency di-inject melalui **Koin**
 
-## Fitur
-- Menyimpan notes menggunakan **SQLDelight database**
-- Mendukung **CRUD operations**
-  - Create note
-  - Read note
-  - Update note
-  - Delete note
-- **Search functionality** untuk mencari notes
-- **Settings screen** dengan DataStore:
-  - Theme
-  - Sort order
-- **Offline-first**, data tersimpan lokal
-- UI states:
-  - Loading
-  - Empty
-  - Content
+## Fitur Utama
+- Notes App dari tugas sebelumnya tetap berjalan
+- Koin DI untuk pengelolaan dependency
+- `DeviceInfo` platform-specific menggunakan `expect/actual`
+- `NetworkMonitor` platform-specific menggunakan `expect/actual`
+- Device Info ditampilkan di halaman settings
+- Network indicator ditampilkan di halaman utama
+- Status jaringan dapat berubah saat internet on/off
+- Struktur kode dipisahkan dengan pendekatan yang lebih rapi dan modular
 
-## Teknologi yang Digunakan
-- Kotlin
-- Android Studio
-- Jetpack Compose
-- SQLDelight
-- DataStore Preferences
-- ViewModel
-- Coroutines
+## Implementasi
+### 1. Dependency Injection
+Aplikasi menggunakan **Koin** untuk mengatur dependency:
+- repository
+- viewmodel
+- platform services
+- monitor jaringan
+- device info
 
-## Database Schema
-Aplikasi ini menggunakan tabel `Note` untuk menyimpan data notes secara lokal.
+### 2. expect/actual Pattern
+Project ini menggunakan pola `expect/actual` untuk memisahkan deklarasi di shared/common code dan implementasi spesifik di platform:
+- `DeviceInfo`
+- `NetworkMonitor`
 
-```sql
-CREATE TABLE Note (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL
-);
-```
+### 3. Device Info
+Informasi device yang ditampilkan pada **Settings Screen** meliputi:
+- nama perangkat
+- versi sistem operasi
+- informasi tambahan device/app sesuai implementasi
 
-Contoh query yang digunakan:
+### 4. Network Status Indicator
+Aplikasi menampilkan indikator status jaringan pada **Main Screen**:
+- saat internet aktif
+- saat internet mati / offline
 
-* `selectAll`
-* `selectById`
-* `insert`
-* `update`
-* `delete`
-* `search`
+## Arsitektur Singkat
+Aplikasi menggunakan pendekatan:
+- **UI Layer**
+- **ViewModel Layer**
+- **Dependency Injection Layer**
+- **Platform-Specific Layer**
 
-## Fitur Settings
-
-Pengaturan aplikasi disimpan menggunakan **DataStore** dengan fitur:
-
-* Theme mode
-* Sort order
-
-## Offline Mode
-
-Aplikasi ini menerapkan konsep **offline-first**, di mana data notes disimpan dan dibaca dari local database sehingga tetap bisa digunakan tanpa koneksi internet.
+Dependency dikelola melalui Koin dan service platform-specific diakses menggunakan `expect/actual`.
 
 ## Struktur Folder
-
 ```text
 com.example.notesapp
-├─ data
-│  ├─ local
-│  ├─ repository
-│  └─ settings
-├─ model
+├─ di
+├─ platform
 ├─ ui
 │  ├─ screen
-│  └─ state
+│  └─ component
 ├─ viewmodel
+├─ data
 └─ MainActivity.kt
 ```
 
-## Screenshot
-
-### Notes List Screen
-
-![Notes List Screen](notes-list-screen.png)
-
-### Add Note Screen
-
-![Add Note Screen](add-note-screen.png)
-
-### Edit Note Screen
-
-![Edit Note Screen](edit-note-screen.png)
-
-### Search Feature
-
-![Search Feature](search-feature.png)
-
-### Settings Screen
-
-![Settings Screen](settings-screen.png)
-
 ## Cara Menjalankan Project
-
 1. Clone repository ini
 2. Buka project di Android Studio
 3. Tunggu proses Gradle Sync selesai
-4. Jalankan aplikasi pada emulator atau device Android
-5. Gunakan fitur tambah, edit, hapus, cari note, dan ubah settings
-
-## Video Demo
-
-Video demo berdurasi **45 detik** menampilkan:
-
-* CRUD operations
-* Search
-* Settings
-* Offline mode
-
-## Format Pengumpulan
-
-* Push ke GitHub repository
-* Gunakan branch: `week-7`
-* README berisi database schema dan screenshot semua screen
-* Video demo 45 detik menunjukkan CRUD, search, settings, dan offline mode 
-
-## Tujuan Pembelajaran
-
-Project ini dibuat untuk memahami:
-
-* penggunaan local storage
-* penggunaan SQLDelight untuk database
-* penggunaan DataStore untuk settings
-* implementasi CRUD operations
-* implementasi search functionality
-* penerapan offline-first architecture
-* pengelolaan UI states pada aplikasi notes
+4. Jalankan aplikasi pada emulator atau device
+5. Buka Settings Screen untuk melihat Device Info
+6. Matikan dan nyalakan internet untuk menguji Network Status Indicator
