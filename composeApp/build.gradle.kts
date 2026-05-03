@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.sqldelight)
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 kotlin {
@@ -37,6 +38,13 @@ kotlin {
             // Lifecycle
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            // Ktor
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.kotlinx.serialization.json)
         }
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
@@ -44,6 +52,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.datastore.preferences)
             implementation(libs.koin.android)
+            implementation(libs.ktor.client.android)
         }
     }
 }

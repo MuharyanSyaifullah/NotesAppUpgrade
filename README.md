@@ -16,59 +16,45 @@ Pada tugas ini, aplikasi di-upgrade dengan:
 - seluruh dependency di-inject melalui **Koin**
 
 ## Fitur Utama
-- Notes App dari tugas sebelumnya tetap berjalan
+- Notes App dengan sistem CRUD
 - Koin DI untuk pengelolaan dependency
-- `DeviceInfo` platform-specific menggunakan `expect/actual`
-- `NetworkMonitor` platform-specific menggunakan `expect/actual`
-- Device Info ditampilkan di halaman settings
-- Network indicator ditampilkan di halaman utama
-- Status jaringan dapat berubah saat internet on/off
-- Struktur kode dipisahkan dengan pendekatan yang lebih rapi dan modular
+- `DeviceInfo` & `NetworkMonitor` menggunakan `expect/actual`
+- **AI Note Summarization** menggunakan Gemini API
+- Status jaringan real-time dengan Network indicator
 
-## Implementasi
-### 1. Dependency Injection
-Aplikasi menggunakan **Koin** untuk mengatur dependency:
-- repository
-- viewmodel
-- platform services
-- monitor jaringan
-- device info
+## Fitur AI: Ringkas Note dengan AI
+Aplikasi ini memiliki fitur "Ringkas Note dengan AI" yang membantu pengguna mendapatkan poin-poin utama dari sebuah catatan secara otomatis.
 
-### 2. expect/actual Pattern
-Project ini menggunakan pola `expect/actual` untuk memisahkan deklarasi di shared/common code dan implementasi spesifik di platform:
-- `DeviceInfo`
-- `NetworkMonitor`
+### Implementasi AI:
+- **Provider:** Google Gemini API (Model: gemini-1.5-flash)
+- **Layering:**
+  - `GeminiService`: Menangani komunikasi langsung ke API Google.
+  - `AiRepository`: Menyediakan abstraksi dan mengelola *System Prompt*.
+  - `AiViewModel`: Mengatur state UI (Idle, Loading, Success, Error).
+  - `MainScreen`: Menampilkan tombol ringkas (✨) dan dialog hasil ringkasan.
+- **System Prompt:** "Anda adalah asisten AI yang ahli dalam meringkas catatan. Tugas Anda adalah membuat ringkasan yang singkat, padat, dan jelas dari teks yang diberikan. Gunakan poin-poin jika perlu. Pastikan poin utama tetap terjaga. Berikan jawaban dalam Bahasa Indonesia."
+- **Handling:**
+  - **Loading State:** Menampilkan `CircularProgressIndicator` saat proses berlangsung.
+  - **Error Handling:** Menampilkan pesan error melalui `Snackbar` jika terjadi gangguan jaringan atau API gagal.
 
-### 3. Device Info
-Informasi device yang ditampilkan pada **Settings Screen** meliputi:
-- nama perangkat
-- versi sistem operasi
-- informasi tambahan device/app sesuai implementasi
-
-### 4. Network Status Indicator
-Aplikasi menampilkan indikator status jaringan pada **Main Screen**:
-- saat internet aktif
-- saat internet mati / offline
-
-## Arsitektur Singkat
-Aplikasi menggunakan pendekatan:
-- **UI Layer**
-- **ViewModel Layer**
-- **Dependency Injection Layer**
-- **Platform-Specific Layer**
-
-Dependency dikelola melalui Koin dan service platform-specific diakses menggunakan `expect/actual`.
+### Cara Konfigurasi API Key:
+1. Dapatkan API Key dari [Google AI Studio](https://aistudio.google.com/).
+2. Buka file `composeApp/src/commonMain/kotlin/com/example/notesapp/di/AppModule.kt`.
+3. Cari baris `single { GeminiService(get(), "YOUR_API_KEY_HERE") }` dan ganti dengan API Key Anda.
 
 ## Struktur Folder
 ```text
 com.example.notesapp
+├─ data
+│  ├─ local
+│  ├─ remote (AI Service & Models)
+│  └─ repository
 ├─ di
 ├─ platform
 ├─ ui
 │  ├─ screen
 │  └─ component
 ├─ viewmodel
-├─ data
 └─ MainActivity.kt
 ```
 

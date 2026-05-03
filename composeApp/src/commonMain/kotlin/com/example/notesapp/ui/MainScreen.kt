@@ -11,20 +11,35 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.notesapp.db.Note
 import com.example.notesapp.ui.state.NotesUiState
+import com.example.notesapp.viewmodel.AiUiState
+import com.example.notesapp.viewmodel.AiViewModel
 import com.example.notesapp.viewmodel.NotesViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: NotesViewModel,
+    aiViewModel: AiViewModel = koinViewModel(),
     onNavigateToSettings: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val aiUiState by aiViewModel.uiState.collectAsState()
     var showEditor by remember { mutableStateOf(false) }
     var editingNote by remember { mutableStateOf<Note?>(null) }
     var searchValue by remember { mutableStateOf(TextFieldValue("")) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(aiUiState) {
+        if (aiUiState is AiUiState.Error) {
+            snackbarHostState.showSnackbar((aiUiState as AiUiState.Error).message)
+            aiViewModel.resetState()
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Notes App") },
@@ -98,7 +113,12 @@ fun MainScreen(
                                 },
                                 onDelete = {
                                     viewModel.deleteNote(note.id)
-                                }
+                                },
+                                onSummarize = {
+                                    aiViewModel.summarizeNote(note.content)
+                                },
+                                aiUiState = aiUiState,
+                                onResetAiState = { aiViewModel.resetState() }
                             )
                         }
                     }
@@ -127,8 +147,32 @@ fun MainScreen(
 private fun NoteCard(
     note: Note,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onSummarize: () -> Unit,
+    aiUiState: AiUiState,
+    onResetAiState: () -> Unit
 ) {
+    var showSummaryDialog by remember { mutableStateOf(false) }
+
+    if (showSummaryDialog && aiUiState is AiUiState.Success) {
+        AlertDialog(
+            onDismissRequest = {
+                showSummaryDialog = false
+                onResetAiState()
+            },
+            title = { Text("Ringkasan AI") },
+            text = { Text(aiUiState.summary) },
+            confirmButton = {
+                Button(onClick = {
+                    showSummaryDialog = false
+                    onResetAiState()
+                }) {
+                    Text("Tutup")
+                }
+            }
+        )
+    }
+
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -141,12 +185,28 @@ private fun NoteCard(
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Button(onClick = onEdit) {
                     Text("Edit")
                 }
                 OutlinedButton(onClick = onDelete) {
                     Text("Delete")
+                }
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                if (aiUiState is AiUiState.Loading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                } else {
+                    IconButton(onClick = {
+                        onSummarize()
+                        showSummaryDialog = true
+                    }) {
+                        Text("✨")
+                    }
                 }
             }
         }

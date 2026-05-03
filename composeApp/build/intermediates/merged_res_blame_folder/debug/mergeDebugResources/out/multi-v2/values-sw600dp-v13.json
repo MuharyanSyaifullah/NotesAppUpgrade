@@ -4,7 +4,7 @@
             "outputFile": "com.example.notesapp.composeApp-mergeDebugResources-53:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\pdoni\\.gradle\\caches\\9.3.1\\transforms\\d9b443086849188df0d0bb9c7d7f0e94\\workspace\\transformed\\appcompat-1.7.0\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "source": "C:\\Users\\pdoni\\.gradle\\caches\\9.3.1\\transforms\\f4f2c930dd6d8cd4502d4fa2f31955a5\\workspace\\transformed\\appcompat-1.7.0\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
